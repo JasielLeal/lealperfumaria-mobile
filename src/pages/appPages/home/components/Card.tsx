@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import { Button } from "../../../components/button/Button";
+import { Button } from "../../../../components/button/Button";
 import { useState } from "react";
 
 export function Card() {
@@ -28,8 +28,8 @@ export function Card() {
                     {openEye ?
                         <Button iconColor="#fff" iconName="eye" iconSize={20} onPress={() => setOpenEye(!openEye)} />
                         :
-                        <Button iconColor="#fff" iconName="eye-off" iconSize={20} onPress={() => setOpenEye(!openEye)} />    
-                }
+                        <Button iconColor="#fff" iconName="eye-off" iconSize={20} onPress={() => setOpenEye(!openEye)} />
+                    }
                 </View>
                 <View className="border-t my-4 border-[#ffffff0c] text-[#ffffff0c]"></View>
                 <View>

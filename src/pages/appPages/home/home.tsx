@@ -1,5 +1,5 @@
 import { View, Text, Image, StatusBar, TouchableOpacity } from "react-native";
-import { Button } from "../../components/button/Button";
+import { Button } from "../../../components/button/Button";
 import perfil from '../../../assets/perfil.jpg'
 import { Card } from "./components/Card";
 import { ActionButton } from "./components/actionButton";
