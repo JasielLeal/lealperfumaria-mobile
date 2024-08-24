@@ -1,11 +1,19 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import { Button } from "../../../../components/button/Button";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { RecentSale } from "../services/recentSale";
+import { ExtractOfTheDay } from "../services/ExtractOfTheDay";
+import { formatCurrency } from "../../../../utils/FormatMoney";
 
 export function Card() {
 
     const [openEye, setOpenEye] = useState(false)
-
+    
+    const { data: extractOfTheDay } = useQuery({
+        queryKey: ['ExtractOfTheDay'],
+        queryFn: ExtractOfTheDay,
+    });
 
     return (
         <>
@@ -17,7 +25,7 @@ export function Card() {
                         </Text>
                         {openEye ?
                             <Text className="text-white">
-                                R$ 13.234,23
+                                {extractOfTheDay ? `R$ ${formatCurrency(String(extractOfTheDay))}` : 'R$ 00,00'}
                             </Text>
                             :
                             <Text className="text-white">
