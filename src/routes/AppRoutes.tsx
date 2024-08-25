@@ -7,6 +7,7 @@ import { Platform } from 'react-native';
 import { RootStackParamList } from '../types/navigation';
 import { SaleDetails } from '../pages/appPages/saleDatails/SaleDatails';
 import { Extract } from '../pages/appPages/extract/extract';
+import { StartSale } from '../pages/appPages/startSale/startSale';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -59,17 +60,29 @@ function TabRoutes() {
                 }}
             />
 
+            <Tab.Screen
+                name="StarSale"
+                component={StartSale}
+                options={{
+                    headerShown: false,
+                    tabBarIcon: ({ color, size, focused }) => (
+                        <Icon name="receipt" size={size} color={focused ? '#B66182' : color} />
+                    ),
+
+                }}
+            />
+
         </Tab.Navigator>
     );
 }
 
 export default function AppRoutes() {
 
-    
+
 
 
     return (
-        <Stack.Navigator screenOptions={{ animationEnabled: true}}>
+        <Stack.Navigator screenOptions={{ animationEnabled: true }}>
             <Stack.Screen name="TabRoutes" component={TabRoutes} options={{ headerShown: false, animationEnabled: true }} />
             <Stack.Screen name="SaleDetails" component={SaleDetails} options={{ headerShown: false, animationEnabled: true }} />
         </Stack.Navigator>
