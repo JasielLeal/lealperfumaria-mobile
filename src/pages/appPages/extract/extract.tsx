@@ -3,6 +3,9 @@ import { Input } from "../../../components/input/input";
 import { useEffect, useState } from "react";
 import { Picker } from "@react-native-picker/picker";
 import { TransactionList } from "./components/transactionList";
+import { useQuery } from "@tanstack/react-query";
+import { MonthlyValue, MonthlyValueRequest } from "./service/MonthlyValue";
+import { formatCurrency } from "../../../utils/FormatMoney";
 
 export function Extract() {
 
@@ -51,6 +54,11 @@ export function Extract() {
         setMonthSelected(formattedMonth);
     }, []);
 
+    const { data: MonthlyAmount, isPending } = useQuery({
+        queryKey: ['MonthlyValue', monthSelected],
+        queryFn: () => MonthlyValue({ monthSelected } as MonthlyValueRequest),
+    });
+
     return (
         <>
             <View className='bg-[#121214] w-full h-screen'>
@@ -59,7 +67,7 @@ export function Extract() {
                         <Text className='text-white font-medium'>Extrato Mensal</Text>
                     </View>
                     <View className="my-5">
-                        <Input placehoulder="Pesquisar..." onChangeText={setSearch}/>
+                        <Input placehoulder="Pesquisar..." onChangeText={setSearch} />
                     </View>
                     <View className="flex flex-row justify-between">
                         <View className="flex flex-row justify-between items-start mb-5">
@@ -68,7 +76,7 @@ export function Extract() {
                                     Saldo consolidado
                                 </Text>
                                 <Text className="text-white">
-                                    R$ 9.873,98
+                                    {formatCurrency(String(MonthlyAmount))}
                                 </Text>
                             </View>
                         </View>
@@ -85,9 +93,12 @@ export function Extract() {
                         </View>
                     </View>
 
-                    <TransactionList month={monthSelected} search={search}/>
+
+                    <TransactionList month={monthSelected} search={search} />
+
                 </View>
             </View>
         </>
     )
 }
+

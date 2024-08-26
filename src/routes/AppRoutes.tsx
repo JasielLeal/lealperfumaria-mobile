@@ -27,7 +27,7 @@ function TabRoutes() {
                     paddingTop: Platform.OS === 'ios' ? 10 : 0, // Ajuste para iOS
                     ...Platform.select({
                         android: {
-                            height: 80, // Altura para Android
+                            height: 60, // Altura para Android
                         },
                         ios: {
                             height: 100, // Altura para iOS
@@ -66,7 +66,7 @@ function TabRoutes() {
                 options={{
                     headerShown: false,
                     tabBarIcon: ({ color, size, focused }) => (
-                        <Icon name="receipt" size={size} color={focused ? '#B66182' : color} />
+                        <Icon name="add" size={size} color={focused ? '#B66182' : color} />
                     ),
 
                 }}

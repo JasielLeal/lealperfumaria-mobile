@@ -16,3 +16,5 @@ export const calculeteTotal = (product: productProps) => {
   const total = (Number(product.qnt) * Number(product.value)) / 100;
   return `R$ ${formatCurrency(total.toFixed(2).toString())}`;
 };
+
+

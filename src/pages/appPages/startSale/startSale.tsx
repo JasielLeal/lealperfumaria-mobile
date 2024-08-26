@@ -1,14 +1,16 @@
-import { View, Text, StyleSheet, Alert } from "react-native";
+import { View, Text, StyleSheet, Alert, FlatList, Modal } from "react-native";
 import { Input } from "../../../components/input/input";
-import { PrimaryButton } from "../../../components/primaryButton/primaryButton";
 import { Picker } from "@react-native-picker/picker";
 import { Scanner } from "./components/Scanner";
-import { useMutation } from "@tanstack/react-query";
+import { InvalidateQueryFilters, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AddProductsToShoppinList } from "./services/addProductsToShoppingList";
 import { useState } from "react";
 import axios from "axios";
 import { FieldValues } from "react-hook-form";
 import { calculeteTotal, formatCurrency } from "../../../utils/FormatMoney";
+import { PrimaryButton } from "../../../components/primaryButton/primaryButton";
+import { CreateSale } from "./services/createSale";
+import LottieView from "lottie-react-native";
 
 export function StartSale() {
 
@@ -24,27 +26,43 @@ export function StartSale() {
         },
         text: {
             color: '#fff',
-        }
+        },
+        productListContainer: {
+            flex: 1,
+            marginTop: 10,
+        },
+        totalContainer: {
+            paddingHorizontal: 20,
+            backgroundColor: '#121214',
+            paddingVertical: 10,
+        },
+        totalText: {
+            color: '#fff',
+            fontSize: 18,
+            fontWeight: 'bold',
+        },
     });
 
     const paymentsMethods = [
         { id: 1, name: "Pix" },
         { id: 2, name: "Cartão" },
         { id: 3, name: "Dinheiro" },
-    ]
+    ];
 
-    interface productProps {
+    interface ProductProps {
         id: string;
         name: string;
         qnt: string;
         value: string;
     }
 
-    const [products, setProducts] = useState<productProps[]>([]);
+    const [products, setProducts] = useState<ProductProps[]>([]);
+    const [sucess, setSucess] = useState(false)
     const [productsBack, setProductsBack] = useState<{ code: string; amount: string }[]>([]);
     const [inputValue, setInputValue] = useState('');
     const [customerName, setCustomerName] = useState('');
-
+    const [selectedValue, setSelectedValue] = useState('Pix');
+    const queryClient = useQueryClient();
     const { mutateAsync: AddProductsToShoppinListFn } = useMutation({
         mutationFn: AddProductsToShoppinList,
         onSuccess: (response) => {
@@ -57,10 +75,10 @@ export function StartSale() {
         },
         onError: (error) => {
             if (axios.isAxiosError(error)) {
-                const status = error.response?.status
+                const status = error.response?.status;
 
                 switch (status) {
-                    case 404: Alert.alert('Error', 'Codigo de barra não cadastrado ou não encontrado')
+                    case 404: Alert.alert('Error', 'Código de barra não cadastrado ou não encontrado');
                 }
             }
         },
@@ -76,11 +94,50 @@ export function StartSale() {
             return acc + (Number(product.qnt) * Number(product.value) / 100);
         }, 0);
         return `R$ ${formatCurrency(total.toFixed(2))}`;
-    }
+    };
+
+    const { mutateAsync: CreateSaleFn } = useMutation({
+        mutationFn: CreateSale,
+        onSuccess: () => {
+            queryClient.invalidateQueries(['MonthlyExtract'] as InvalidateQueryFilters);
+            queryClient.invalidateQueries(['MonthlyValue'] as InvalidateQueryFilters);
+            setSucess(true)
+            setProducts([]);
+            setProductsBack([])
+            setCustomerName('');
+            
+        },
+        onError: (error) => {
+            Alert.alert("Error", 'Algo deu errado')
+        },
+    });
+
+    const handleCreateSale = async () => {
+        if (!customerName) {
+            Alert.alert('Erro', 'Por favor, insira o nome do cliente');
+            return;
+        }
+        if (productsBack.length === 0) {
+            Alert.alert('Erro', 'Por favor, adicione produtos à venda');
+            return;
+        }
+
+        if (selectedValue == null && selectedValue == undefined) {
+            setSelectedValue('Pix')
+        } //ultima coisa que fiz
+
+        try {
+            await CreateSaleFn({ customerName, products: productsBack, selectedValue });
+
+        } catch (error) {
+
+            Alert.alert('Erro', 'Erro ao criar a venda');
+        }
+    };
 
     return (
         <View className='bg-[#121214] w-full h-screen'>
-            <View className='px-5 pt-5'>
+            <View className='px-5 pt-5 flex-1'>
                 <View className='flex flex-row justify-center mb-5'>
                     <Text className='text-white font-medium'>Nova Venda</Text>
                 </View>
@@ -90,7 +147,11 @@ export function StartSale() {
                     onChangeText={setCustomerName}
                 />
                 <View style={styles.pickerContainer}>
-                    <Picker style={styles.text}>
+                    <Picker
+                        style={styles.text}
+                        selectedValue={selectedValue}
+                        onValueChange={(itemValue) => setSelectedValue(itemValue)}
+                    >
                         {paymentsMethods.map((method) => (
                             <Picker.Item label={method.name} value={method.name} key={method.id} />
                         ))}
@@ -108,18 +169,49 @@ export function StartSale() {
                     </View>
                     <Scanner onScan={handleScan} />
                 </View>
-                {products.map((product) => (
-                    <View className="flex flex-row justify-between mt-5" key={product.id}>
-                        <View className="flex flex-row">
-                            <Text className="w-[45px]">{product.qnt}</Text>
-                            <Text numberOfLines={1} ellipsizeMode="tail" className="w-[200px] ml-1">{product.name}</Text>
+
+                <FlatList
+                    data={products}
+                    keyExtractor={(item) => item.id}
+                    style={styles.productListContainer}
+                    renderItem={({ item }) => (
+                        <View className="flex flex-row justify-between mt-5">
+                            <View className="flex flex-row">
+                                <Text className="w-[25px] text-text">{item.qnt}</Text>
+                                <Text numberOfLines={1} ellipsizeMode="tail" className="w-[200px] ml-1 text-text">{item.name}</Text>
+                            </View>
+                            <Text className="text-text">
+                                {calculeteTotal(item)}
+                            </Text>
                         </View>
-                        <Text>
-                            {calculeteTotal(product)}
-                        </Text>
-                    </View>
-                ))}
+                    )}
+                />
+
+                <View className="flex flex-row mt-5 items-center justify-between">
+                    <Text className='text-text font-medium text-base'>Valor total</Text>
+                    <Text className='text-text font-medium text-base'>{calcularTotalGeral()}</Text>
+                </View>
+                <View className="mb-20 mt-5">
+                    <PrimaryButton name="Finalizar Venda" onPress={handleCreateSale} />
+                </View>
             </View>
+            {/* Lottie Animation */}
+            {sucess ?
+                <Modal
+                    animationType="fade"
+                >
+                    <View className="bg-[#121214] bg-opacity-50 w-full h-screen flex justify-center items-center absolute z-50">
+                        <LottieView
+                            source={require('../../../assets/lottie/check.json')}
+                            autoPlay
+                            loop={false}
+                            onAnimationFinish={() => setSucess(false)}
+                            style={{ width: 200, height: 200 }}
+                        />
+                    </View>
+                </Modal>
+                :
+                ''}
         </View>
     )
 }
