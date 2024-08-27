@@ -11,9 +11,10 @@ import { calculeteTotal, formatCurrency } from "../../../utils/FormatMoney";
 import { PrimaryButton } from "../../../components/primaryButton/primaryButton";
 import { CreateSale } from "./services/createSale";
 import LottieView from "lottie-react-native";
+import { AddProductModal } from "./components/addProductModal";
+import { ConfirmationModal } from "./components/confirmationModal";
 
 export function StartSale() {
-
     const styles = StyleSheet.create({
         pickerContainer: {
             marginTop: 20,
@@ -57,11 +58,27 @@ export function StartSale() {
     }
 
     const [products, setProducts] = useState<ProductProps[]>([]);
-    const [sucess, setSucess] = useState(false)
+    const [sucess, setSucess] = useState(false);
     const [productsBack, setProductsBack] = useState<{ code: string; amount: string }[]>([]);
     const [inputValue, setInputValue] = useState('');
     const [customerName, setCustomerName] = useState('');
     const [selectedValue, setSelectedValue] = useState('Pix');
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [confirmationModal, setConfirmationModal] = useState(false);
+
+    const toggleModal = () => {
+        setIsModalVisible(!isModalVisible);
+    };
+
+    const toggleConfirmationModal = () => {
+        setConfirmationModal(!confirmationModal);
+    };
+
+    const openAddProductModal = () => {
+        setConfirmationModal(false);
+        setIsModalVisible(true);
+    };
+
     const queryClient = useQueryClient();
     const { mutateAsync: AddProductsToShoppinListFn } = useMutation({
         mutationFn: AddProductsToShoppinList,
@@ -78,7 +95,7 @@ export function StartSale() {
                 const status = error.response?.status;
 
                 switch (status) {
-                    case 404: Alert.alert('Error', 'Código de barra não cadastrado ou não encontrado');
+                    case 404: setConfirmationModal(true);
                 }
             }
         },
@@ -101,13 +118,13 @@ export function StartSale() {
         onSuccess: () => {
             queryClient.invalidateQueries(['MonthlyExtract'] as InvalidateQueryFilters);
             queryClient.invalidateQueries(['MonthlyValue'] as InvalidateQueryFilters);
-            setSucess(true)
+            setSucess(true);
             setProducts([]);
-            setProductsBack([])
+            setProductsBack([]);
             setCustomerName('');
         },
         onError: (error) => {
-            Alert.alert("Error", 'Algo deu errado')
+            Alert.alert("Error", `${error}`);
         },
     });
 
@@ -121,17 +138,11 @@ export function StartSale() {
             return;
         }
 
-        if (selectedValue == null && selectedValue == undefined) {
-            setSelectedValue('Pix')
-        } //ultima coisa que fiz
-
-        try {
-            await CreateSaleFn({ customerName, products: productsBack, selectedValue });
-
-        } catch (error) {
-
-            Alert.alert('Erro', 'Erro ao criar a venda');
+        if (!selectedValue) {
+            setSelectedValue('Pix');
         }
+
+        await CreateSaleFn({ customerName, products: productsBack, selectedValue });
     };
 
     return (
@@ -193,6 +204,13 @@ export function StartSale() {
                 <View className="mb-20 mt-5">
                     <PrimaryButton name="Finalizar Venda" onPress={handleCreateSale} />
                 </View>
+
+                <AddProductModal onClose={toggleModal} visible={isModalVisible} />
+                <ConfirmationModal
+                    onClose={toggleConfirmationModal}
+                    visible={confirmationModal}
+                    openAddProductModal={toggleModal}
+                />
             </View>
             {/* Lottie Animation */}
             {sucess ?
