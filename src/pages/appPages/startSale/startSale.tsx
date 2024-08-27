@@ -105,7 +105,6 @@ export function StartSale() {
             setProducts([]);
             setProductsBack([])
             setCustomerName('');
-            
         },
         onError: (error) => {
             Alert.alert("Error", 'Algo deu errado')

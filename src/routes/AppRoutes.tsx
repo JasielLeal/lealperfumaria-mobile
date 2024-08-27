@@ -8,6 +8,7 @@ import { RootStackParamList } from '../types/navigation';
 import { SaleDetails } from '../pages/appPages/saleDatails/SaleDatails';
 import { Extract } from '../pages/appPages/extract/extract';
 import { StartSale } from '../pages/appPages/startSale/startSale';
+import { RegisteredProducts } from '../pages/appPages/registeredProducts/registeredProducts';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -67,6 +68,18 @@ function TabRoutes() {
                     headerShown: false,
                     tabBarIcon: ({ color, size, focused }) => (
                         <Icon name="add" size={size} color={focused ? '#B66182' : color} />
+                    ),
+
+                }}
+            />
+
+            <Tab.Screen
+                name="registeredProducts"
+                component={RegisteredProducts}
+                options={{
+                    headerShown: false,
+                    tabBarIcon: ({ color, size, focused }) => (
+                        <Icon name="bag" size={size} color={focused ? '#B66182' : color} />
                     ),
 
                 }}
