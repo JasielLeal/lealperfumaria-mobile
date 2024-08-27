@@ -25,6 +25,7 @@ export function ModalDeEditProduct({ ProductIdProp, isModalVisible, setIsModalVi
     };
 
     async function onSub(data: FieldValues) {
+
         const dataWithId = { ...data, id: ProductIdProp };
         await EditProductFn(dataWithId);
     };

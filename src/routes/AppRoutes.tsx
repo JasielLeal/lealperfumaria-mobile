@@ -9,6 +9,7 @@ import { SaleDetails } from '../pages/appPages/saleDatails/SaleDatails';
 import { Extract } from '../pages/appPages/extract/extract';
 import { StartSale } from '../pages/appPages/startSale/startSale';
 import { RegisteredProducts } from '../pages/appPages/registeredProducts/registeredProducts';
+import { Users } from '../pages/appPages/users/users';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -80,6 +81,18 @@ function TabRoutes() {
                     headerShown: false,
                     tabBarIcon: ({ color, size, focused }) => (
                         <Icon name="bag" size={size} color={focused ? '#B66182' : color} />
+                    ),
+
+                }}
+            />
+
+            <Tab.Screen
+                name="Users"
+                component={Users}
+                options={{
+                    headerShown: false,
+                    tabBarIcon: ({ color, size, focused }) => (
+                        <Icon name="shield-checkmark-sharp" size={size} color={focused ? '#B66182' : color} />
                     ),
 
                 }}
