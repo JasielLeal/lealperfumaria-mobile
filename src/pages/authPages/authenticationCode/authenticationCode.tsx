@@ -24,13 +24,12 @@ export function AuthenticationCode() {
     const { mutateAsync: SendTokenFn } = useMutation({
         mutationFn: SendToken,
         onSuccess: () => {
-            Alert.alert('Sucesso', 'Codigo enviado com sucesso')
             setSucessCode(true)
         },
         onError: (e) => {
             //console.log(e)
             //console.log('Erro detalhado:', JSON.stringify(e, null, 2));
-            Alert.alert('Error', 'Houve um erro ao codigo ser enviado')
+            Alert.alert('Error', 'Codigo invalido')
         },
     })
 

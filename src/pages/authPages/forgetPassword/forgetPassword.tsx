@@ -1,4 +1,4 @@
-import { View, Text, ImageBackground, Image, ScrollView, Alert, TouchableOpacity } from "react-native";
+import { View, Text, ImageBackground, Image, ScrollView, Alert, TouchableOpacity, ActivityIndicator } from "react-native";
 import { Input } from "../../../components/input/input";
 import { PrimaryButton } from "../../../components/primaryButton/primaryButton";
 import { Controller, FieldValues, useForm } from "react-hook-form";
@@ -19,7 +19,7 @@ export function ForgetPassword() {
         mode: 'onSubmit', // Validação será feita apenas no envio do formulário
     });
 
-    const { mutateAsync: ForgetPasswordServiceFn } = useMutation({
+    const { mutateAsync: ForgetPasswordServiceFn, isPending } = useMutation({
         mutationFn: ForgetPasswordService,
         onSuccess: () => {
             navigation.navigate('AuthenticationCode')
@@ -40,40 +40,53 @@ export function ForgetPassword() {
     }
 
     return (
-        <ImageBackground
-            source={require('../../../assets/backgroundLogin.png')}
-            style={{ flex: 1 }}
-        >
-            <ScrollView>
-                <View className="flex items-center mt-32">
-                    <Image source={require('../../../assets/logo.png')} className="w-[70px] h-[70px]" />
-                    <Text className="text-white">Leal Perfumaria</Text>
-                </View>
-                <View className="px-5">
-                    <View className="flex items-center mt-40">
-                        <Text className="text-xl mb-5 text-white">Digite seu e-mail abaixo</Text>
+        <>
+            {
+                isPending ?
+
+                    <View className="flex items-center justify-center h-screen w-full bg-[#121214]">
+                        <ActivityIndicator size="large" color={"#B66182"} />
                     </View>
-                    <Controller
-                        control={control}
-                        name='email'
-                        render={({ field: { onChange, onBlur, value } }) => (
-                            <>
-                                <Input
-                                    placehoulder="E-mail" keyboardType="email-address"
-                                    onBlur={onBlur}
-                                    onChangeText={onChange}
-                                    value={value}
+                    :
+                    <ImageBackground
+                        source={require('../../../assets/backgroundLogin.png')}
+                        style={{ flex: 1 }}
+                    >
+                        <ScrollView>
+                            <View className="flex items-center mt-32">
+                                <Image source={require('../../../assets/logo.png')} className="w-[70px] h-[70px]" />
+                                <Text className="text-white">Leal Perfumaria</Text>
+                            </View>
+                            <View className="px-5">
+                                <View className="flex items-center mt-40">
+                                    <Text className="text-xl mb-5 text-white">Digite seu e-mail abaixo</Text>
+                                </View>
+                                <Controller
+                                    control={control}
+                                    name='email'
+                                    render={({ field: { onChange, onBlur, value } }) => (
+                                        <>
+                                            <Input
+                                                placehoulder="E-mail" keyboardType="email-address"
+                                                onBlur={onBlur}
+                                                onChangeText={onChange}
+                                                value={value}
+                                            />
+                                            {errors.email && <Text className="text-red-500">{errors.email.message as string}</Text>}
+                                        </>
+                                    )}
                                 />
-                                {errors.email && <Text className="text-red-500">{errors.email.message as string}</Text>}
-                            </>
-                        )}
-                    />
-                    <PrimaryButton name="Enviar" onPress={handleSubmit(handleLogin)} className="mt-5" />
-                    <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
-                        <Text className="text-center text-text mt-5">Voltar para o login</Text>
-                    </TouchableOpacity>
-                </View>
-            </ScrollView>
-        </ImageBackground>
+                                <PrimaryButton name="Enviar" onPress={handleSubmit(handleLogin)} className="mt-5" />
+                                <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
+                                    <Text className="text-center text-text mt-5">Voltar para o login</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </ScrollView>
+                    </ImageBackground>
+
+            }
+
+
+        </>
     );
 }

@@ -1,5 +1,5 @@
 import { Controller, FieldValues, useForm } from "react-hook-form";
-import { View, Text, Alert } from "react-native";
+import { View, Text, Alert, Modal } from "react-native";
 import { Input } from "../../../../components/input/input";
 import { PrimaryButton } from "../../../../components/primaryButton/primaryButton";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,21 +8,23 @@ import { useMutation } from "@tanstack/react-query";
 import { ChangePassword } from "../services/changePassword";
 import { useState } from "react";
 import { Congratulations } from "./congratulations";
+import LottieView from "lottie-react-native";
 
 export function InputChange({ code }: FieldValues) {
 
-    
+
     const { control, handleSubmit } = useForm({
         resolver: zodResolver(newPasswordSchema),
         mode: 'onSubmit', // Validação será feita apenas no envio do formulário
     });
 
     const [congratulations, setCongratulations] = useState(false)
+    const [sucess, setSucess] = useState(false)
 
     const { mutateAsync: ChangePasswordFn } = useMutation({
         mutationFn: ChangePassword,
         onSuccess: () => {
-            Alert.alert('Sucesso')
+            setSucess(true)
             setCongratulations(true)
         },
         onError: (e) => {
@@ -62,6 +64,22 @@ export function InputChange({ code }: FieldValues) {
                     <PrimaryButton name="Enviar" onPress={handleSubmit(handleCode)} className="mt-5" />
                 </View>
             }
+            {sucess ?
+                <Modal
+                    animationType="fade"
+                >
+                    <View className="bg-[#121214] bg-opacity-50 w-full h-screen flex justify-center items-center absolute z-50">
+                        <LottieView
+                            source={require('../../../../assets/lottie/check.json')}
+                            autoPlay
+                            loop={false}
+                            onAnimationFinish={() => setSucess(false)}
+                            style={{ width: 200, height: 200 }}
+                        />
+                    </View>
+                </Modal>
+                :
+                ''}
         </>
     )
 }

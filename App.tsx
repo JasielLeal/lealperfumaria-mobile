@@ -4,9 +4,11 @@ import { NavigationContainer } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Routes } from './src/routes';
 
-const client = new QueryClient()
+
+const client = new QueryClient();
 
 export default function App() {
+
   return (
     <>
       <NavigationContainer>
@@ -20,4 +22,3 @@ export default function App() {
     </>
   );
 }
-
