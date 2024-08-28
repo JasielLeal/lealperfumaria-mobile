@@ -74,11 +74,6 @@ export function StartSale() {
         setConfirmationModal(!confirmationModal);
     };
 
-    const openAddProductModal = () => {
-        setConfirmationModal(false);
-        setIsModalVisible(true);
-    };
-
     const queryClient = useQueryClient();
     const { mutateAsync: AddProductsToShoppinListFn } = useMutation({
         mutationFn: AddProductsToShoppinList,

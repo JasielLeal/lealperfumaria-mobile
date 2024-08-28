@@ -94,8 +94,8 @@ export function AuthProvider({ children }) {
   return (
     <AuthContext.Provider value={{ signed: !!user, user, singInFc, loading, logoutFc }}>
       {loading ? (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <ActivityIndicator size="large" />
+        <View className="flex items-center justify-center h-screen w-full bg-[#121214]">
+          <ActivityIndicator size="large" color={"#B66182"} />
         </View>
       ) : (
         children

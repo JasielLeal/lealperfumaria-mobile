@@ -1,28 +1,27 @@
 import { BarcodeScanningResult, CameraView, useCameraPermissions } from "expo-camera";
 import { useState } from "react";
 import { FieldValues } from "react-hook-form";
-import { TouchableOpacity, View, Text, Button } from "react-native";
+import { TouchableOpacity, View, Text, StyleSheet, Modal, Dimensions } from "react-native";
 
 type ScannerProps = {
-    onScan: (data: string) => void;
+    onScan: (data: FieldValues) => void;
 };
 
-export function Scanner({ onScan }: FieldValues) {
+export function Scanner({ onScan }: ScannerProps) {
 
     const [permission, requestPermission] = useCameraPermissions();
     const [isCameraVisible, setIsCameraVisible] = useState(false);
     const [scanned, setScanned] = useState(false);
-    const [cod, setCod] = useState('')
+
+    const { width, height } = Dimensions.get('window');
 
     if (!permission) {
-        // Camera permissions are still loading.
         return <View />;
     }
 
     if (!permission.granted) {
-        // Camera permissions are not granted yet.
         return (
-            <View >
+            <View>
                 <TouchableOpacity className="bg-blue-300 p-3 rounded-xl" onPress={requestPermission}>
                     <Text className="text-white text-center font-semibold">
                         Conceder Permissão
@@ -32,37 +31,62 @@ export function Scanner({ onScan }: FieldValues) {
         );
     }
 
-    const handleBarCodeScanned = ({ data }: BarcodeScanningResult) => {
+    const handleBarCodeScanned = ({ data }: FieldValues) => {
         setScanned(true);
         setIsCameraVisible(false);
-        onScan(data)
-        setCod(data)
+        onScan(data);
         setTimeout(() => setScanned(false), 500);
     };
 
     return (
         <>
-            {
-                isCameraVisible ?
-                    <View >
-                        <CameraView onBarcodeScanned={scanned ? undefined : handleBarCodeScanned} className="h-[50px] w-[270px]">
-                            <View >
-                            </View>
+            {isCameraVisible ? (
+                <Modal
+                    animationType="slide"
+                    transparent={false}
+                    visible={isCameraVisible}
+                    onRequestClose={() => setIsCameraVisible(false)}
+                >
+                    <View style={styles.cameraContainer}>
+                        <CameraView
+                            onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+                            style={{ width, height }}
+
+                        >
+                            <TouchableOpacity style={styles.closeButton} onPress={() => setIsCameraVisible(false)}>
+                                <Text style={styles.closeButtonText}>Fechar</Text>
+                            </TouchableOpacity>
                         </CameraView>
                     </View>
-
-                    :
-
-                    <View className="flex flex-row items-center">
-                        <View className="flex items-center flex-row">
-                            <TouchableOpacity onPress={() => setIsCameraVisible(true)} className="bg-white p-3 rounded-xl w-[270px]">
-                                <Text className="font-semibold text-background text-center w-full">Scanear Produto</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-
-
-            }
+                </Modal>
+            ) : (
+                <View className="flex flex-row items-center">
+                    <TouchableOpacity onPress={() => setIsCameraVisible(true)} className="bg-white p-3 rounded-xl w-[270px]">
+                        <Text className="font-semibold text-background text-center w-full">Scanear Produto</Text>
+                    </TouchableOpacity>
+                </View>
+            )}
         </>
-    )
+    );
 }
+
+const styles = StyleSheet.create({
+    cameraContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#000',
+    },
+    closeButton: {
+        position: 'absolute',
+        top: 50,
+        right: 20,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        padding: 10,
+        borderRadius: 5,
+    },
+    closeButtonText: {
+        color: '#fff',
+        fontSize: 18,
+    },
+});

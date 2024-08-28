@@ -1,7 +1,7 @@
 import { BarcodeScanningResult, CameraView, useCameraPermissions } from "expo-camera";
 import { useState } from "react";
 import { FieldValues } from "react-hook-form";
-import { TouchableOpacity, View, Text, Button } from "react-native";
+import { TouchableOpacity, View, Text, Button, Dimensions } from "react-native";
 
 type ScannerProps = {
     onScan: (data: string) => void;
@@ -13,7 +13,7 @@ export function Scanner({ onScan }: FieldValues) {
     const [isCameraVisible, setIsCameraVisible] = useState(false);
     const [scanned, setScanned] = useState(false);
     const [cod, setCod] = useState('')
-
+    const { width, height } = Dimensions.get('window');
     if (!permission) {
         // Camera permissions are still loading.
         return <View />;
@@ -44,8 +44,9 @@ export function Scanner({ onScan }: FieldValues) {
         <>
             {
                 isCameraVisible ?
-                    <View >
-                        <CameraView onBarcodeScanned={scanned ? undefined : handleBarCodeScanned} className="h-[50px] w-[360px]">
+                    <View className="flex-1 justify-center items-center z-50
+                     ">
+                        <CameraView onBarcodeScanned={scanned ? undefined : handleBarCodeScanned} className="h-[50px] w-[360px]" style={{ width, height}}>
                             <View >
                             </View>
                         </CameraView>

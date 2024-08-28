@@ -1,26 +1,42 @@
 import { View, Text, ImageBackground, Image, ScrollView, Alert, TouchableOpacity } from "react-native";
 import { Input } from "../../../components/input/input";
 import { PrimaryButton } from "../../../components/primaryButton/primaryButton";
-import AuthContext from "../../../context/authContext";
-import { useContext } from "react";
 import { Controller, FieldValues, useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
-import { LoginSchema } from "./schemas/LoginSchema";
+import { ForgetPasswordSchema } from "./schemas/ForgetPassword";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types";
 import { RootStackParamList } from "../../../types/navigation";
+import { useMutation } from "@tanstack/react-query";
+import { ForgetPasswordService } from "./services/forgetPassword";
+import axios from "axios";
 
-export function Login() {
-    const { singInFc } = useContext(AuthContext);
+export function ForgetPassword() {
     type SaleDetailsScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
     const navigation = useNavigation<SaleDetailsScreenNavigationProp>();
     const { control, handleSubmit, formState: { errors } } = useForm({
-        resolver: zodResolver(LoginSchema),
+        resolver: zodResolver(ForgetPasswordSchema),
         mode: 'onSubmit', // Validação será feita apenas no envio do formulário
     });
 
+    const { mutateAsync: ForgetPasswordServiceFn } = useMutation({
+        mutationFn: ForgetPasswordService,
+        onSuccess: () => {
+            navigation.navigate('AuthenticationCode')
+        },
+        onError: (error) => {
+            if (axios.isAxiosError(error)) {
+                const status = error.response?.status;
+
+                switch (status) {
+                    case 404: 'E-mail não cadastrado'
+                }
+            }
+        },
+    })
+
     async function handleLogin(data: FieldValues) {
-        await singInFc(data);
+        await ForgetPasswordServiceFn(data)
     }
 
     return (
@@ -35,7 +51,7 @@ export function Login() {
                 </View>
                 <View className="px-5">
                     <View className="flex items-center mt-40">
-                        <Text className="text-xl mb-5 text-white">Acesse seu Espaço</Text>
+                        <Text className="text-xl mb-5 text-white">Digite seu e-mail abaixo</Text>
                     </View>
                     <Controller
                         control={control}
@@ -52,19 +68,9 @@ export function Login() {
                             </>
                         )}
                     />
-                    <Controller
-                        control={control}
-                        name='password'
-                        render={({ field: { onChange, onBlur, value } }) => (
-                            <View className="my-5">
-                                <Input placehoulder="Senha" secureTextEntry onChangeText={onChange} onBlur={onBlur} value={value} />
-                                {errors.password && <Text className="text-red-500">{errors.password.message as string}</Text>}
-                            </View>
-                        )}
-                    />
-                    <PrimaryButton name="Acessar" onPress={handleSubmit(handleLogin)} />
-                    <TouchableOpacity onPress={() => navigation.navigate('ForgetPassword')}>
-                        <Text className="text-center text-text mt-5">Esqueceu a senha?</Text>
+                    <PrimaryButton name="Enviar" onPress={handleSubmit(handleLogin)} className="mt-5" />
+                    <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
+                        <Text className="text-center text-text mt-5">Voltar para o login</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>
