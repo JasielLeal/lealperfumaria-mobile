@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export async function AddProductsToShoppinList(code: FieldValues) {
 
-    const token = await AsyncStorage.getItem('token:');
+    const token = await AsyncStorage.getItem('token');
 
     const response = await backend.post(`/bankproduct/find`, {
         code

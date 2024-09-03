@@ -1,6 +1,6 @@
 import { Modal, View, Text, TouchableOpacity, TextInput } from "react-native";
 import { Input } from "../../../../components/input/input";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, FieldValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterProdutcSchema } from "../schemas/RegisterProduct";
 import { Scanner } from "./Scanner";
@@ -26,7 +26,7 @@ export function AddProductModal({ onClose, visible, functionOption }: ModalProps
         criteriaMode: 'all',
     });
 
-    const handleCodeScanned = (code: string) => {
+    const handleCodeScanned = (code: FieldValues) => {
         setValue('code', code);
     };
 
@@ -113,7 +113,6 @@ export function AddProductModal({ onClose, visible, functionOption }: ModalProps
                                                         autoCapitalize="none"
                                                         value={value}
                                                         onChangeText={onChange}
-                                                        placeholderTextColor={'#818181'}
                                                     />
                                                     <View className="flex items-center mt-3">
                                                         <Scanner onScan={handleCodeScanned} />

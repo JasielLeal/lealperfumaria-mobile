@@ -6,6 +6,8 @@ import { formatCurrency } from "../../../../utils/FormatMoney";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../../../types/navigation";
 import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types";
+import { useState } from "react";
+import { ModalOtion } from "./modalOption";
 
 export function RecentesPayments() {
 
@@ -32,11 +34,17 @@ export function RecentesPayments() {
         saleProduct: SaleProduct[];
     }
 
-    const { data, isPending } = useQuery({
+    const { data } = useQuery({
         queryKey: ['RecentSale'],
         queryFn: RecentSale,
     });
 
+    const [modalVisibleOn, setModalVisibleOn] = useState(false)
+    const [selectedSaleId, setSelectedSaleId] = useState<string | null>(null);
+    const toggleModal = (saleId?: string) => {
+        setModalVisibleOn(!modalVisibleOn);
+        setSelectedSaleId(saleId || null)
+    };
     type SaleDetailsScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
     const navigation = useNavigation<SaleDetailsScreenNavigationProp>();
 
@@ -51,27 +59,29 @@ export function RecentesPayments() {
                     Recentes
                 </Text>
                 {data?.map((recent: Sale) => (
-                    <TouchableOpacity onPress={() => handlePress(recent)} key={recent.id}> 
-                        <View className="flex flex-row justify-between mt-5 bg-background p-3 rounded-xl" >
-                            <View className="flex flex-row">
-                                <Text className="bg-white p-2 rounded-lg w-[45px]">
-                                    <Icon name='cart' size={20} color={'#AFAFAF'} />
-                                </Text>
-                                <View className="ml-3">
-                                    <Text className="text-white font-medium">
-                                        {recent.customerName}
+                    <>
+                        <TouchableOpacity onPress={() => handlePress(recent)} key={recent.id} onLongPress={() => toggleModal(recent.id)}>
+                            <View className="flex flex-row justify-between mt-5 bg-background p-3 rounded-xl" >
+                                <View className="flex flex-row">
+                                    <Text className="bg-white p-2 rounded-lg w-[45px]">
+                                        <Icon name='cart' size={20} color={'#AFAFAF'} />
                                     </Text>
-                                    <Text className="text-text text-xs">
-                                        {recent.transictionType}
-                                    </Text>
+                                    <View className="ml-3">
+                                        <Text className="text-white font-medium">
+                                            {recent.customerName}
+                                        </Text>
+                                        <Text className="text-text text-xs">
+                                            {recent.transictionType}
+                                        </Text>
+                                    </View>
+                                </View>
+                                <View>
+                                    <Text className="text-white text-xs">+R$ {formatCurrency(recent.value)}</Text>
                                 </View>
                             </View>
-                            <View>
-                                <Text className="text-white text-xs">+R$ {formatCurrency(recent.value)}</Text>
-                            </View>
-
-                        </View>
-                    </TouchableOpacity>
+                        </TouchableOpacity>
+                        <ModalOtion onClose={toggleModal} visible={modalVisibleOn} saleId={selectedSaleId} />
+                    </>
                 ))}
 
             </View>

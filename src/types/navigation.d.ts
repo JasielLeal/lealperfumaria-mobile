@@ -3,7 +3,7 @@ export type RootStackParamList = {
   ListagemDePedidos: undefined;
   TabRoutes: undefined;
   DetalhesVenda: { month: monthProps };
-  Extrato: undefined;
+  Extract: undefined;
   SaleDetails: { sale: Sale };
   ForgetPassword: undefined;
   SignIn: undefined;

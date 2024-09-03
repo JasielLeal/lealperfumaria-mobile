@@ -14,7 +14,7 @@ export async function monthlyExtract({
   skip,
   take,
 }: monthlyExtractRequest) {
-  const token = await AsyncStorage.getItem("token:");
+  const token = await AsyncStorage.getItem("token");
 
   const response = await backend.get(`sale/monthlyextract/${month}`, {
     headers: {
@@ -26,5 +26,6 @@ export async function monthlyExtract({
       skip,
     },
   });
+
   return response.data;
 }

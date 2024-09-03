@@ -17,4 +17,12 @@ export const calculeteTotal = (product: productProps) => {
   return `R$ ${formatCurrency(total.toFixed(2).toString())}`;
 };
 
+export function formatDate(isoDate: Date) {
+  const date = new Date(isoDate);
 
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Janeiro é 0!
+  const year = date.getFullYear();
+
+  return `${day}/${month}/${year}`;
+}

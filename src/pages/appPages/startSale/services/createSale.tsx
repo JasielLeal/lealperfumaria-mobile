@@ -14,7 +14,7 @@ export async function CreateSale({
 }: CreateSaleProsps) {
 
 
-    const token = await AsyncStorage.getItem("token:");
+    const token = await AsyncStorage.getItem("token");
     const response = await backend.post(
         `sale/create`,
         {

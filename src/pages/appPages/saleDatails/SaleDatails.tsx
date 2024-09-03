@@ -1,15 +1,11 @@
 import { View, Text } from 'react-native';
 import { RouteButton } from '../../../components/routeButton/RouteButton';
 import { useNavigation } from '@react-navigation/native';
-import { formatCurrency } from '../../../utils/FormatMoney';
-
+import { formatCurrency, formatDate } from '../../../utils/FormatMoney';
 
 export function SaleDetails({ route }: any) {
     const { sale } = route.params;
     const navigation = useNavigation();
-
-
-
 
     return (
         <View className='bg-[#121214] w-full h-screen'>
@@ -27,11 +23,15 @@ export function SaleDetails({ route }: any) {
                     </View>
                     <View className='flex flex-row items-center justify-between mt-2'>
                         <Text className='text-white'>Nome</Text>
-                        <Text className='text-text'>{sale.customerName}</Text>
+                        <Text className='text-text '>{sale.customerName}</Text>
                     </View>
                     <View className='flex flex-row items-center justify-between mt-2'>
                         <Text className='text-white'>Forma de Pagamento</Text>
                         <Text className='text-text'>{sale.transictionType}</Text>
+                    </View>
+                    <View className='flex flex-row items-center justify-between mt-2'>
+                        <Text className='text-white'>Data</Text>
+                        <Text className='text-text'>{formatDate(sale.createdAt)}</Text>
                     </View>
                 </View>
 
@@ -42,7 +42,7 @@ export function SaleDetails({ route }: any) {
                             <View className='flex flex-row items-center justify-between'>
                                 <View className='flex flex-row items-center'>
                                     <Text className='text-text mr-3'>{product.amount}x</Text>
-                                    <Text className='text-text'>{product.BankProduct.name}</Text>
+                                    <Text className='text-text w-[200px]' numberOfLines={1} ellipsizeMode="tail">{product.BankProduct.name}</Text>
                                 </View>
                                 <View>
                                     <Text className='text-white'>R$ {formatCurrency(product.BankProduct.value)}</Text>

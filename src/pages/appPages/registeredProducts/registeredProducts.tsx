@@ -48,7 +48,7 @@ export function RegisteredProducts() {
                         <Icon name="cart" size={20} color="#AFAFAF" />
                     </Text>
                     <View className="ml-3">
-                        <Text className="text-white font-medium">{item.name}</Text>
+                        <Text className="text-white font-medium w-[200px] text-xs" numberOfLines={1} ellipsizeMode="tail">{item.name}</Text>
                         <Text className="text-text text-xs">{item.code}</Text>
                     </View>
                 </View>

@@ -79,8 +79,8 @@ export function AuthProvider({ children }) {
       await AsyncStorage.setItem('user', JSON.stringify(data.user))
       setLoading(false);
     } catch (e) {
-      console.log(e)
-      console.log(JSON.stringify(e, null, 4))
+      //console.log(e)
+      //console.log(JSON.stringify(e, null, 4))
       Alert.alert("Erro no Login", "Não foi possível realizar o login. Por favor, verifique suas credenciais e tente novamente.");
       setLoading(false);
     }
