@@ -1,6 +1,7 @@
 import { InvalidateQueryFilters, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Modal, Text, View, TouchableOpacity, Alert } from "react-native";
 import { DeleteSale } from "../services/DeleteSale";
+import { useNotifications } from "react-native-notificated";
 
 interface ModalProps {
     visible: boolean;
@@ -11,7 +12,7 @@ interface ModalProps {
 export function ModalOtion({ visible, onClose, saleId }: ModalProps) {
 
     const queryClient = useQueryClient();
-
+    const { notify } = useNotifications()
     const { mutateAsync: deleteSaleFn } = useMutation({
         mutationFn: () => {
             if (saleId) {
@@ -21,11 +22,28 @@ export function ModalOtion({ visible, onClose, saleId }: ModalProps) {
             }
         },
         onSuccess: () => {
-            queryClient.invalidateQueries(['MonthlyExtract'] as InvalidateQueryFilters);
+            notify('success', {
+                params: {
+                    description: 'Produto Deletado',
+                    title: 'Sucesso',
+                },
+                config: {
+                    
+                }
+            })
+            queryClient.invalidateQueries(['MonthlyExtract', 'RecentSale'] as InvalidateQueryFilters);
             onClose();
         },
         onError: (e) => {
-            Alert.alert('Erro', 'Erro ao deletar a venda');
+            notify('error', {
+                params: {
+                    description: 'Ao deletar o produto',
+                    title: 'Error',
+                },
+                config: {
+                    
+                }
+            })
             console.log('Erro detalhado:', JSON.stringify(e, null, 2));
         }
     });

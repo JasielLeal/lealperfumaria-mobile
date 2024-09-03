@@ -8,6 +8,7 @@ import { RootStackParamList } from "../../../../types/navigation";
 import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types";
 import { useState } from "react";
 import { ModalOtion } from "./modalOption";
+import { useNotifications } from "react-native-notificated";
 
 export function RecentesPayments() {
 
@@ -52,12 +53,15 @@ export function RecentesPayments() {
         navigation.navigate('SaleDetails', { sale: recent });
     }
 
+    
+
     return (
         <>
             <View>
                 <Text className="text-white font-medium">
                     Recentes
                 </Text>
+                
                 {data?.map((recent: Sale) => (
                     <>
                         <TouchableOpacity onPress={() => handlePress(recent)} key={recent.id} onLongPress={() => toggleModal(recent.id)}>

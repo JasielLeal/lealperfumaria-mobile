@@ -7,9 +7,10 @@ import { useEffect } from 'react';
 import * as Font from 'expo-font';
 import Icon from 'react-native-vector-icons/Ionicons'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { createNotifications } from 'react-native-notificated';
 
 const client = new QueryClient();
-
+const { NotificationsProvider, useNotifications, ...events } = createNotifications()
 export default function App() {
 
   useEffect(() => {
@@ -28,6 +29,7 @@ export default function App() {
             <QueryClientProvider client={client}>
               <StatusBar barStyle="light-content" backgroundColor={"#121214"} />
               <Routes />
+              <NotificationsProvider />
             </QueryClientProvider>
           </GestureHandlerRootView>
         </AuthProvider>

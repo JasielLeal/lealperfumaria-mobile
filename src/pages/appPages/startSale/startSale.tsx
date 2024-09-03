@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Alert, FlatList, Modal } from "react-native";
+import { View, Text, StyleSheet, Alert, FlatList, Modal, ActivityIndicator } from "react-native";
 import { Input } from "../../../components/input/input";
 import { Picker } from "@react-native-picker/picker";
 import { Scanner } from "./components/Scanner";
@@ -13,6 +13,7 @@ import { CreateSale } from "./services/createSale";
 import LottieView from "lottie-react-native";
 import { AddProductModal } from "./components/addProductModal";
 import { ConfirmationModal } from "./components/confirmationModal";
+import { useNotifications } from "react-native-notificated";
 
 export function StartSale() {
     const styles = StyleSheet.create({
@@ -108,7 +109,7 @@ export function StartSale() {
         return `R$ ${formatCurrency(total.toFixed(2))}`;
     };
 
-    const { mutateAsync: CreateSaleFn } = useMutation({
+    const { mutateAsync: CreateSaleFn, isPending } = useMutation({
         mutationFn: CreateSale,
         onSuccess: () => {
             queryClient.invalidateQueries(['MonthlyExtract'] as InvalidateQueryFilters);
@@ -123,13 +124,32 @@ export function StartSale() {
         },
     });
 
+    const { notify } = useNotifications()
+
     const handleCreateSale = async () => {
         if (!customerName) {
-            Alert.alert('Erro', 'Por favor, insira o nome do cliente');
+            notify('warning', {
+                params: {
+                    description: 'Insira o nome do cliente',
+                    title: 'Aviso',
+                },
+                config: {
+
+                }
+            })
             return;
+
         }
         if (productsBack.length === 0) {
-            Alert.alert('Erro', 'Por favor, adicione produtos à venda');
+            notify('warning', {
+                params: {
+                    description: 'Adicione os Produtos',
+                    title: 'Aviso',
+                },
+                config: {
+
+                }
+            })
             return;
         }
 
@@ -140,90 +160,102 @@ export function StartSale() {
         await CreateSaleFn({ customerName, products: productsBack, selectedValue });
     };
 
+
+
     return (
-        <View className='bg-[#121214] w-full h-screen'>
-            <View className='px-5 pt-5 flex-1'>
-                <View className='flex flex-row justify-center mb-5'>
-                    <Text className='text-white font-medium'>Nova Venda</Text>
+        <>
+            {isPending ? (
+                <View className="flex items-center justify-center h-screen w-full bg-[#121214]">
+                    <ActivityIndicator size="large" color={"#B66182"} />
                 </View>
-                <Input
-                    placehoulder="Nome do cliente..."
-                    value={customerName}
-                    onChangeText={setCustomerName}
-                />
-                <View style={styles.pickerContainer}>
-                    <Picker
-                        style={styles.text}
-                        selectedValue={selectedValue}
-                        onValueChange={(itemValue) => setSelectedValue(itemValue)}
-                    >
-                        {paymentsMethods.map((method) => (
-                            <Picker.Item label={method.name} value={method.name} key={method.id} />
-                        ))}
-                    </Picker>
-                </View>
-                <View className="flex flex-row justify-between">
-                    <View className="w-[70px]">
-                        <Input
-                            placehoulder="01"
-                            className="text-center"
-                            keyboardType="number-pad"
-                            value={inputValue}
-                            onChangeText={setInputValue}
-                        />
-                    </View>
-                    <Scanner onScan={handleScan} />
-                </View>
-
-                <FlatList
-                    data={products}
-                    keyExtractor={(item) => item.id}
-                    style={styles.productListContainer}
-                    renderItem={({ item }) => (
-                        <View className="flex flex-row justify-between mt-5">
-                            <View className="flex flex-row">
-                                <Text className="w-[25px] text-text">{item.qnt}</Text>
-                                <Text numberOfLines={1} ellipsizeMode="tail" className="w-[200px] ml-1 text-text">{item.name}</Text>
-                            </View>
-                            <Text className="text-text">
-                                {calculeteTotal(item)}
-                            </Text>
+            ) : (
+                <View className='bg-[#121214] w-full h-screen'>
+                    <View className='px-5 pt-5 flex-1'>
+                        <View className='flex flex-row justify-center mb-5'>
+                            <Text className='text-white font-medium'>Nova Venda</Text>
                         </View>
-                    )}
-                />
+                        <Input
+                            placehoulder="Nome do cliente..."
+                            value={customerName}
+                            onChangeText={setCustomerName}
+                        />
+                        <View style={styles.pickerContainer}>
+                            <Picker
+                                style={styles.text}
+                                selectedValue={selectedValue}
+                                onValueChange={(itemValue) => setSelectedValue(itemValue)}
+                            >
+                                {paymentsMethods.map((method) => (
+                                    <Picker.Item label={method.name} value={method.name} key={method.id} />
+                                ))}
+                            </Picker>
+                        </View>
+                        <View className="flex flex-row justify-between">
+                            <View className="w-[70px]">
+                                <Input
+                                    placehoulder="01"
+                                    className="text-center"
+                                    keyboardType="number-pad"
+                                    value={inputValue}
+                                    onChangeText={setInputValue}
+                                />
+                            </View>
+                            <Scanner onScan={handleScan} />
+                        </View>
 
-                <View className="flex flex-row mt-5 items-center justify-between">
-                    <Text className='text-text font-medium text-base'>Valor total</Text>
-                    <Text className='text-text font-medium text-base'>{calcularTotalGeral()}</Text>
-                </View>
-                <View className="mb-20 mt-5">
-                    <PrimaryButton name="Finalizar Venda" onPress={handleCreateSale} />
-                </View>
+                        <FlatList
+                            data={products}
+                            keyExtractor={(item) => item.id}
+                            style={styles.productListContainer}
+                            renderItem={({ item }) => (
+                                <View className="flex flex-row justify-between mt-5">
+                                    <View className="flex flex-row">
+                                        <Text className="w-[25px] text-text">{item.qnt}</Text>
+                                        <Text numberOfLines={1} ellipsizeMode="tail" className="w-[200px] ml-1 text-text">{item.name}</Text>
+                                    </View>
+                                    <Text className="text-text">
+                                        {calculeteTotal(item)}
+                                    </Text>
+                                </View>
+                            )}
+                        />
 
-                <AddProductModal onClose={toggleModal} visible={isModalVisible} />
-                <ConfirmationModal
-                    onClose={toggleConfirmationModal}
-                    visible={confirmationModal}
-                    openAddProductModal={toggleModal}
-                />
-            </View>
-            {/* Lottie Animation */}
-            {sucess ?
-                <Modal
-                    animationType="fade"
-                >
-                    <View className="bg-[#121214] bg-opacity-50 w-full h-screen flex justify-center items-center absolute z-50">
-                        <LottieView
-                            source={require('../../../assets/lottie/check.json')}
-                            autoPlay
-                            loop={false}
-                            onAnimationFinish={() => setSucess(false)}
-                            style={{ width: 200, height: 200 }}
+                        <View className="flex flex-row mt-5 items-center justify-between">
+                            <Text className='text-text font-medium text-base'>Valor total</Text>
+                            <Text className='text-text font-medium text-base'>{calcularTotalGeral()}</Text>
+                        </View>
+                        <View className="mb-20 mt-5">
+                            <PrimaryButton name="Finalizar Venda" onPress={handleCreateSale} />
+                        </View>
+
+                        <AddProductModal onClose={toggleModal} visible={isModalVisible} />
+                        <ConfirmationModal
+                            onClose={toggleConfirmationModal}
+                            visible={confirmationModal}
+                            openAddProductModal={toggleModal}
                         />
                     </View>
-                </Modal>
-                :
-                ''}
-        </View>
+                    {/* Lottie Animation */}
+                    {sucess ?
+                        <Modal
+                            animationType="fade"
+                        >
+                            <View className="bg-[#121214] bg-opacity-50 w-full h-screen flex justify-center items-center absolute z-50">
+                                <LottieView
+                                    source={require('../../../assets/lottie/check.json')}
+                                    autoPlay
+                                    loop={false}
+                                    onAnimationFinish={() => setSucess(false)}
+                                    style={{ width: 200, height: 200 }}
+                                />
+                            </View>
+                        </Modal>
+                        :
+                        ''}
+                </View>
+            )}
+
+        </>
+
     )
 }
