@@ -9,7 +9,7 @@ import AuthContext from "../../../context/authContext";
 import { ModalLogout } from "./components/ModalLogout";
 
 export function Home() {
-
+    console.log(process.env.EXPO)
     const { user } = useContext(AuthContext)
     const [isModalVisible, setIsModalVisible] = useState(false);
 
