@@ -21,10 +21,10 @@ export function Users() {
 
     return (
         <>
-            <View className='bg-[#121214] w-full h-screen'>
+            <View className='dark:bg-[#121214] w-full h-screen'>
                 <View className="px-5 pt-5">
                     <View className='flex flex-row justify-center mb-5'>
-                        <Text className='text-white font-medium'>Usuários Cadastrados</Text>
+                        <Text className='dark:text-white font-medium'>Usuários Cadastrados</Text>
                     </View>
 
                     <View className="mt-5">
@@ -35,7 +35,7 @@ export function Users() {
                                         <Image source={{ uri: user?.avatar }} width={40} height={40} className="rounded-full" />
                                     </View>
                                     <View className="my-2">
-                                        <Text className="font-semibold text-sm text-text">{user?.name} {user?.secondName}</Text>
+                                        <Text className="font-semibold text-sm dark:text-text">{user?.name} {user?.secondName}</Text>
                                         <Text className="text-xs font-medium text-zinc-600" >{user?.role}</Text>
                                     </View>
                                 </View>

@@ -4,10 +4,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Routes } from './src/routes';
 import { useEffect } from 'react';
-import * as Font from 'expo-font';
 import Icon from 'react-native-vector-icons/Ionicons'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { createNotifications } from 'react-native-notificated';
+import { ThemeProvider } from './src/context/themeContext';
 
 const client = new QueryClient();
 const { NotificationsProvider, useNotifications, ...events } = createNotifications()
@@ -23,17 +23,19 @@ export default function App() {
 
   return (
     <>
-      <NavigationContainer>
-        <AuthProvider>
-          <GestureHandlerRootView>
-            <QueryClientProvider client={client}>
-              <StatusBar barStyle="light-content" backgroundColor={"#121214"} />
-              <Routes />
-              <NotificationsProvider />
-            </QueryClientProvider>
-          </GestureHandlerRootView>
-        </AuthProvider>
-      </NavigationContainer>
+      <ThemeProvider>
+        <NavigationContainer>
+          <AuthProvider>
+            <GestureHandlerRootView>
+              <QueryClientProvider client={client}>
+                <StatusBar barStyle="light-content" backgroundColor={"#121214"} />
+                <Routes />
+                <NotificationsProvider />
+              </QueryClientProvider>
+            </GestureHandlerRootView>
+          </AuthProvider>
+        </NavigationContainer>
+      </ThemeProvider>
     </>
   );
 }

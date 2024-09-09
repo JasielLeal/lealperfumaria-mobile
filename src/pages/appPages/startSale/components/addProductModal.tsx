@@ -65,7 +65,7 @@ export function AddProductModal({ onClose, visible, functionOption }: ModalProps
             >
                 <View className="flex items-center justify-center w-full h-screen bg-[#000000ad]">
                     <View className="w-full">
-                        <View className="bg-[#000000] p-4 rounded-xl w-full h-screen">
+                        <View className="bg-[#0000008e] p-4 rounded-xl w-full h-screen">
                             <Text className="mb-5 font-medium text-text text-center pt-5">Adicione um produto</Text>
                             <View className="flex">
                                 <View className="">
@@ -125,7 +125,7 @@ export function AddProductModal({ onClose, visible, functionOption }: ModalProps
                                 <View className="flex flex-row justify-between items-center mt-10">
                                     <PrimaryButton name="Registrar" className="w-[170px]" onPress={handleSubmit(onSub)} />
                                     <TouchableOpacity onPress={onClose}>
-                                        <Text className="text-white w-[170px] bg-background text-center rounded-xl p-3">Close</Text>
+                                        <Text className="bg-[#e0e0e0] dark:text-white w-[170px] dark:bg-background text-center rounded-xl p-3">Close</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>

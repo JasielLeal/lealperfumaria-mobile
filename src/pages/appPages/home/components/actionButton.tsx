@@ -15,7 +15,7 @@ export function ActionButton() {
         <View className="flex flex-row my-5 justify-between">
             {dataButton.map((action) => (
                 <View key={action.id}>
-                    <TouchableOpacity className="bg-background p-3 rounded-lg">
+                    <TouchableOpacity className="bg-[#e0e0e0] dark:bg-background  p-3 rounded-lg">
                         <Text className="bg-white p-2 rounded-lg">
                             <Icon name={action.iconName} size={15} color={'#AFAFAF'} />
                         </Text>

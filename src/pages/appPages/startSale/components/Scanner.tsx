@@ -61,7 +61,7 @@ export function Scanner({ onScan }: ScannerProps) {
                 </Modal>
             ) : (
                 <View className="flex flex-row items-center">
-                    <TouchableOpacity onPress={() => setIsCameraVisible(true)} className="bg-white p-3 rounded-xl w-[270px]">
+                    <TouchableOpacity onPress={() => setIsCameraVisible(true)} className="bg-[#e0e0e0] dark:bg-white p-3 rounded-xl w-[270px]">
                         <Text className="font-semibold text-background text-center w-full">Scanear Produto</Text>
                     </TouchableOpacity>
                 </View>

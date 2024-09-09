@@ -42,31 +42,31 @@ export function RegisteredProducts() {
 
     const renderProduct = ({ item }: { item: ProductProps }) => (
         <TouchableOpacity onPress={() => setEditProductId(item.id)}>
-            <View className="flex flex-row justify-between mt-5 bg-background p-3 rounded-xl">
+            <View className="flex flex-row justify-between mt-5 bg-[#e0e0e0] dark:bg-background p-3 rounded-xl">
                 <View className="flex flex-row">
                     <Text className="bg-white p-2 rounded-lg w-[45px]">
                         <Icon name="cart" size={20} color="#AFAFAF" />
                     </Text>
                     <View className="ml-3">
-                        <Text className="text-white font-medium w-[200px] text-xs" numberOfLines={1} ellipsizeMode="tail">{item.name}</Text>
-                        <Text className="text-text text-xs">{item.code}</Text>
+                        <Text className="dark:text-white font-medium w-[190px] text-xs" numberOfLines={1} ellipsizeMode="tail">{item.name}</Text>
+                        <Text className="dark:text-text text-xs">{item.code}</Text>
                     </View>
                 </View>
                 <View>
-                    <Text className="text-white text-xs">R$ {formatCurrency(item.value)}</Text>
+                    <Text className="dark:text-white text-xs">R$ {formatCurrency(item.value)}</Text>
                 </View>
             </View>
         </TouchableOpacity>
     );
 
     return (
-        <View className="bg-[#121214] w-full h-screen">
+        <View className="dark:bg-[#121214] w-full h-screen">
             <View className="px-5 pt-5 flex-1">
                 <View className="flex flex-row justify-between mb-5 items-center">
                     <Text className="w-[35px]"></Text>
-                    <Text className="text-white font-medium">Produtos Cadastrados</Text>
+                    <Text className="dark:text-white font-medium">Produtos Cadastrados</Text>
                     <TouchableOpacity onPress={toggleModal} className="bg-primary p-2 w-[40px] h-[40px] rounded-xl flex items-center justify-center">
-                        <Text>+</Text>
+                        <Text className="text-white">+</Text>
                     </TouchableOpacity>
                     <AddProductModal onClose={toggleModal} visible={isModalVisible} />
                 </View>

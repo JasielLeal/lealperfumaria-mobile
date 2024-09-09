@@ -8,7 +8,6 @@ import { RootStackParamList } from "../../../../types/navigation";
 import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types";
 import { useState } from "react";
 import { ModalOtion } from "./modalOption";
-import { useNotifications } from "react-native-notificated";
 
 export function RecentesPayments() {
 
@@ -58,29 +57,29 @@ export function RecentesPayments() {
     return (
         <>
             <View>
-                <Text className="text-white font-medium">
+                <Text className="dark:text-white font-medium">
                     Recentes
                 </Text>
                 
                 {data?.map((recent: Sale) => (
                     <>
                         <TouchableOpacity onPress={() => handlePress(recent)} key={recent.id} onLongPress={() => toggleModal(recent.id)}>
-                            <View className="flex flex-row justify-between mt-5 bg-background p-3 rounded-xl" >
+                            <View className="flex flex-row justify-between mt-5 bg-[#e0e0e0] dark:bg-background  p-3 rounded-xl" >
                                 <View className="flex flex-row">
                                     <Text className="bg-white p-2 rounded-lg w-[45px]">
                                         <Icon name='cart' size={20} color={'#AFAFAF'} />
                                     </Text>
                                     <View className="ml-3">
-                                        <Text className="text-white font-medium">
+                                        <Text className="dark:text-white font-medium">
                                             {recent.customerName}
                                         </Text>
-                                        <Text className="text-text text-xs">
+                                        <Text className="dark:text-text text-xs">
                                             {recent.transictionType}
                                         </Text>
                                     </View>
                                 </View>
                                 <View>
-                                    <Text className="text-white text-xs">+R$ {formatCurrency(recent.value)}</Text>
+                                    <Text className="dark:text-white text-xs">+R$ {formatCurrency(recent.value)}</Text>
                                 </View>
                             </View>
                         </TouchableOpacity>

@@ -61,10 +61,10 @@ export function Extract() {
 
     return (
         <>
-            <View className='bg-[#121214] w-full h-screen'>
+            <View className='dark:bg-[#121214] w-full h-screen'>
                 <View className='px-5 pt-5'>
                     <View className='flex flex-row justify-center'>
-                        <Text className='text-white font-medium'>Extrato Mensal</Text>
+                        <Text className='dark:text-white font-medium'>Extrato Mensal</Text>
                     </View>
                     <View className="my-5">
                         <Input placehoulder="Pesquisar..." onChangeText={setSearch} />
@@ -72,10 +72,10 @@ export function Extract() {
                     <View className="flex flex-row justify-between">
                         <View className="flex flex-row justify-between items-start mb-5">
                             <View>
-                                <Text className="text-text">
+                                <Text className="dark:text-text">
                                     Saldo consolidado
                                 </Text>
-                                <Text className="text-white">
+                                <Text className="dark:text-white">
                                     R$ {formatCurrency(String(MonthlyAmount))}
                                 </Text>
                             </View>
@@ -92,7 +92,6 @@ export function Extract() {
                             </Picker>
                         </View>
                     </View>
-
 
                     <TransactionList month={monthSelected} search={search} />
 

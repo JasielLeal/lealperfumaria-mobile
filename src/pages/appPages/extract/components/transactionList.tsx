@@ -39,22 +39,22 @@ export function TransactionList({ month, search }: any) {
                 renderItem={({ item }) => (
                     <>
                         <TouchableOpacity key={item.id} onPress={() => navigation.navigate('SaleDetails', { sale: item })} onLongPress={() => toggleModal(item.id)}>
-                            <View className="flex flex-row justify-between mt-5 bg-background p-3 rounded-xl" >
+                            <View className="flex flex-row justify-between mt-5 bg-[#e0e0e0] dark:bg-background p-3 rounded-xl" >
                                 <View className="flex flex-row">
-                                    <Text className="bg-white p-2 rounded-lg w-[45px]">
+                                    <Text className="bg-white dark:bg-white p-2 rounded-lg w-[45px]">
                                         <Icon name='cart' size={20} color={'#AFAFAF'} />
                                     </Text>
                                     <View className="ml-3">
-                                        <Text className="text-white font-medium">
+                                        <Text className="dark:text-white font-medium">
                                             {item.customerName}
                                         </Text>
-                                        <Text className="text-text text-xs">
+                                        <Text className="dark:text-text text-xs">
                                             {item.transictionType}
                                         </Text>
                                     </View>
                                 </View>
                                 <View>
-                                    <Text className="text-white text-xs">+R$ {formatCurrency(item.value)}</Text>
+                                    <Text className="dark:text-white text-xs">+R$ {formatCurrency(item.value)}</Text>
                                 </View>
 
                             </View>

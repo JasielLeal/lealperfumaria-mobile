@@ -165,14 +165,14 @@ export function StartSale() {
     return (
         <>
             {isPending ? (
-                <View className="flex items-center justify-center h-screen w-full bg-[#121214]">
+                <View className="flex items-center justify-center h-screen w-full dark:bg-[#121214]">
                     <ActivityIndicator size="large" color={"#B66182"} />
                 </View>
             ) : (
-                <View className='bg-[#121214] w-full h-screen'>
+                <View className='dark:bg-[#121214] w-full h-screen'>
                     <View className='px-5 pt-5 flex-1'>
                         <View className='flex flex-row justify-center mb-5'>
-                            <Text className='text-white font-medium'>Nova Venda</Text>
+                            <Text className='dark:text-white font-medium'>Nova Venda</Text>
                         </View>
                         <Input
                             placehoulder="Nome do cliente..."
@@ -210,10 +210,10 @@ export function StartSale() {
                             renderItem={({ item }) => (
                                 <View className="flex flex-row justify-between mt-5">
                                     <View className="flex flex-row">
-                                        <Text className="w-[25px] text-text">{item.qnt}</Text>
-                                        <Text numberOfLines={1} ellipsizeMode="tail" className="w-[200px] ml-1 text-text">{item.name}</Text>
+                                        <Text className="w-[25px] dark:text-text">{item.qnt}x</Text>
+                                        <Text numberOfLines={1} ellipsizeMode="tail" className="w-[200px] ml-1 dark:text-text">{item.name}</Text>
                                     </View>
-                                    <Text className="text-text">
+                                    <Text className="dark:text-text">
                                         {calculeteTotal(item)}
                                     </Text>
                                 </View>
@@ -221,8 +221,8 @@ export function StartSale() {
                         />
 
                         <View className="flex flex-row mt-5 items-center justify-between">
-                            <Text className='text-text font-medium text-base'>Valor total</Text>
-                            <Text className='text-text font-medium text-base'>{calcularTotalGeral()}</Text>
+                            <Text className='dark:text-text font-medium text-base'>Valor total</Text>
+                            <Text className='dark:text-text font-medium text-base'>{calcularTotalGeral()}</Text>
                         </View>
                         <View className="mb-20 mt-5">
                             <PrimaryButton name="Finalizar Venda" onPress={handleCreateSale} />
@@ -240,7 +240,7 @@ export function StartSale() {
                         <Modal
                             animationType="fade"
                         >
-                            <View className="bg-[#121214] bg-opacity-50 w-full h-screen flex justify-center items-center absolute z-50">
+                            <View className="dark:bg-[#121214] bg-opacity-50 w-full h-screen flex justify-center items-center absolute z-50">
                                 <LottieView
                                     source={require('../../../assets/lottie/check.json')}
                                     autoPlay

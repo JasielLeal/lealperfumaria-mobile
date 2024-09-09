@@ -10,10 +10,13 @@ import { Extract } from '../pages/appPages/extract/extract';
 import { StartSale } from '../pages/appPages/startSale/startSale';
 import { RegisteredProducts } from '../pages/appPages/registeredProducts/registeredProducts';
 import { Users } from '../pages/appPages/users/users';
+import { useTheme } from '../context/themeContext';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator<RootStackParamList>();
 
 function TabRoutes() {
+
+    const { theme } = useTheme();
 
     return (
         <Tab.Navigator
@@ -21,7 +24,7 @@ function TabRoutes() {
             screenOptions={({ route }) => ({
                 tabBarShowLabel: false,
                 tabBarStyle: {
-                    backgroundColor: '#121214',
+                    backgroundColor: theme === 'dark' ? '#121214' : '#fff',
                     borderTopWidth: 1,
                     borderColor: '#ffffff1f',
                     elevation: 10,
