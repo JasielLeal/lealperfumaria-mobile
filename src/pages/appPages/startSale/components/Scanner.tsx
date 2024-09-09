@@ -31,7 +31,8 @@ export function Scanner({ onScan }: ScannerProps) {
         );
     }
 
-    const handleBarCodeScanned = ({ data }: FieldValues) => {
+    const handleBarCodeScanned = ({ type, data }: FieldValues) => {
+
         setScanned(true);
         setIsCameraVisible(false);
         onScan(data);
@@ -50,6 +51,7 @@ export function Scanner({ onScan }: ScannerProps) {
                     <View style={styles.cameraContainer}>
                         <CameraView
                             onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+
                             style={{ width, height }}
 
                         >
