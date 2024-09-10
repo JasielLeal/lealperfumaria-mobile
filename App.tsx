@@ -24,8 +24,8 @@ export default function App() {
   return (
     <>
       <ThemeProvider>
-        <NavigationContainer>
-          <AuthProvider>
+        <AuthProvider>
+          <NavigationContainer>
             <GestureHandlerRootView>
               <QueryClientProvider client={client}>
                 <StatusBar barStyle="light-content" backgroundColor={"#121214"} />
@@ -33,8 +33,8 @@ export default function App() {
                 <NotificationsProvider />
               </QueryClientProvider>
             </GestureHandlerRootView>
-          </AuthProvider>
-        </NavigationContainer>
+          </NavigationContainer>
+        </AuthProvider>
       </ThemeProvider>
     </>
   );

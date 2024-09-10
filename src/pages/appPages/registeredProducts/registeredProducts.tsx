@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, ActivityIndicator, FlatList } from "react-native";
 import { AddProductModal } from "./components/addProductModal";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { ListOfRegisteredProducts } from "./services/listOfRegisteredProducts";
 import { Input } from "../../../components/input/input";
 import { formatCurrency } from "../../../utils/FormatMoney";
@@ -20,9 +20,20 @@ export function RegisteredProducts() {
     const [skip, setSkip] = useState(0);
     const [take, setTake] = useState(0);
 
-    const { data, refetch, isPending } = useQuery({
+    const { refetch, isPending } = useQuery({
         queryKey: ['ListOfRegisteredProducts'],
         queryFn: () => ListOfRegisteredProducts({ search, take, skip }),
+    });
+
+    const {
+        data,
+        fetchNextPage,
+        hasNextPage,
+    } = useInfiniteQuery({
+        queryKey: ['MonthlyExtract', search],
+        queryFn: ({ pageParam = 0 }) => ListOfRegisteredProducts({ search, take: 10, skip: pageParam * 10 }),
+        getNextPageParam: (lastPage, allPages) => lastPage.length === 10 ? allPages.length : undefined,
+        initialPageParam: 0
     });
 
     const handleSearchChange = useCallback((text: string) => {
@@ -70,11 +81,12 @@ export function RegisteredProducts() {
                     </TouchableOpacity>
                     <AddProductModal onClose={toggleModal} visible={isModalVisible} />
                 </View>
-                <View>
+                <View className="mb-2">
                     <Input
                         placehoulder="Pesquisar..."
                         onChangeText={handleSearchChange}
                         value={search}
+                        
                     />
                 </View>
                 {isPending ? (
@@ -83,12 +95,17 @@ export function RegisteredProducts() {
                     </View>
                 ) : (
                     <FlatList
-                        data={data}
+                        data={data?.pages.flatMap(page => page)}
                         renderItem={renderProduct}
                         className="mb-[75px]"
                         keyExtractor={(item) => item.id}
                         contentContainerStyle={{ paddingBottom: 20 }}
                         showsVerticalScrollIndicator={false}
+                        onEndReached={() => {
+                            if (hasNextPage) {
+                                fetchNextPage();
+                            }
+                        }}
                     />
                 )}
             </View>

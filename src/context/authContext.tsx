@@ -41,7 +41,6 @@ export function AuthProvider({ children }) {
 
     async function loadStoragedData() {
       try {
-
         const storagedToken = await AsyncStorage.getItem('token');
         const storagedUser = await AsyncStorage.getItem('user');
 
@@ -50,6 +49,7 @@ export function AuthProvider({ children }) {
 
           const decodedToken = jwtDecode(storagedToken);
           const currentDate = new Date();
+
           const expirationDate = new Date(Number(decodedToken?.exp) * 1000);
 
           if (expirationDate < currentDate) {
