@@ -14,6 +14,7 @@ import LottieView from "lottie-react-native";
 import { AddProductModal } from "./components/addProductModal";
 import { ConfirmationModal } from "./components/confirmationModal";
 import { useNotifications } from "react-native-notificated";
+import { Button } from "../../../components/button/Button";
 
 export function StartSale() {
     const styles = StyleSheet.create({
@@ -56,6 +57,7 @@ export function StartSale() {
         name: string;
         qnt: string;
         value: string;
+        code: string;
     }
 
     const [products, setProducts] = useState<ProductProps[]>([]);
@@ -79,11 +81,38 @@ export function StartSale() {
     const { mutateAsync: AddProductsToShoppinListFn } = useMutation({
         mutationFn: AddProductsToShoppinList,
         onSuccess: (response) => {
-            const newInputValue = inputValue || '1';
-            const product = { id: response.data.id, qnt: newInputValue, name: response.data.name, value: response.data.value };
-            const productNew = { code: response.data.code, amount: newInputValue };
-            setProducts([...products, product]);
-            setProductsBack([...productsBack, productNew]);
+            const newInputValue = inputValue || '1';  // Valor padrão de quantidade
+
+            // Verifica se o produto já existe na lista com base no código
+            const existingProductIndex = products.findIndex(
+                (product) => product.id === response.data.id
+            );
+
+            if (existingProductIndex >= 0) {
+                // Produto já existe, atualiza a quantidade
+                const updatedProducts = [...products];
+                const updatedProductBack = [...productsBack];
+
+                updatedProducts[existingProductIndex].qnt = String(
+                    Number(updatedProducts[existingProductIndex].qnt) + Number(newInputValue)
+                );
+
+                updatedProductBack[existingProductIndex].amount = String(
+                    Number(updatedProductBack[existingProductIndex].amount) + Number(newInputValue)
+                );
+
+                setProducts(updatedProducts);
+                setProductsBack(updatedProductBack);
+            } else {
+                // Produto novo, adiciona à lista
+                const product = { id: response.data.id, qnt: newInputValue, name: response.data.name, value: response.data.value, code: response.data.code };
+                const productNew = { code: response.data.code, amount: newInputValue };
+
+                setProducts([...products, product]);
+                setProductsBack([...productsBack, productNew]);
+            }
+
+            // Limpa o campo de input após a adição ou atualização
             setInputValue('');
         },
         onError: (error) => {
@@ -124,7 +153,21 @@ export function StartSale() {
         },
     });
 
+
     const { notify } = useNotifications()
+
+    const handleRemoveProduct = (productId: string, productCode: string) => {
+
+        console.log(productCode)
+        // Remove o produto da lista visual
+        const updatedProducts = products.filter((product) => product.id !== productId);
+        setProducts(updatedProducts);
+
+        // Remove o produto da lista que será enviada ao backend
+        const updatedProductsBack = productsBack.filter((product) => product.code !== productCode);
+        setProductsBack(updatedProductsBack);
+
+    };
 
     const handleCreateSale = async () => {
         if (!customerName) {
@@ -157,10 +200,10 @@ export function StartSale() {
             setSelectedValue('Pix');
         }
 
+        console.log(productsBack)
+
         await CreateSaleFn({ customerName, products: productsBack, selectedValue });
     };
-
-
 
     return (
         <>
@@ -208,14 +251,22 @@ export function StartSale() {
                             keyExtractor={(item) => item.id}
                             style={styles.productListContainer}
                             renderItem={({ item }) => (
-                                <View className="flex flex-row justify-between mt-5">
-                                    <View className="flex flex-row">
-                                        <Text className="w-[25px] dark:text-text">{item.qnt}x</Text>
-                                        <Text numberOfLines={1} ellipsizeMode="tail" className="w-[200px] ml-1 dark:text-text">{item.name}</Text>
+                                <View className="flex flex-row items-center mt-5 justify-between">
+                                    <View className="flex flex-row justify-between border border-[#ffffff27] p-2 rounded-xl">
+                                        <View className="flex flex-row">
+                                            <Text className="w-[25px] dark:text-text">{item.qnt}x</Text>
+                                            <Text numberOfLines={1} ellipsizeMode="tail" className="w-[200px] ml-1 dark:text-text">{item.name}</Text>
+                                        </View>
+                                        <Text className="dark:text-text">
+                                            {calculeteTotal(item)}
+                                        </Text>
                                     </View>
-                                    <Text className="dark:text-text">
-                                        {calculeteTotal(item)}
-                                    </Text>
+                                    <Button
+                                        iconColor="#fff"
+                                        iconName="trash"
+                                        iconSize={15}
+                                        onPress={() => handleRemoveProduct(item.id, item.code)} // Chama a função de remoção ao clicar
+                                    />
                                 </View>
                             )}
                         />

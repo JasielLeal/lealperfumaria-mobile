@@ -32,42 +32,41 @@ interface User {
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
-export function AuthProvider({ children }) {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-
-    async function loadStoragedData() {
-      try {
-        const storagedToken = await AsyncStorage.getItem('token');
-        const storagedUser = await AsyncStorage.getItem('user');
-
-        if (storagedToken && storagedUser) {
-          setUser(JSON.parse(storagedUser));
-
-          const decodedToken = jwtDecode(storagedToken);
-          const currentDate = new Date();
-
-          const expirationDate = new Date(Number(decodedToken?.exp) * 1000);
-
-          if (expirationDate < currentDate) {
-            await AsyncStorage.clear();
-            setUser(null);
-            console.log('Token expirou e os dados foram limpos.');
-          }
-
-        }
-      } catch (error) {
-        console.error('Erro ao carregar os dados do armazenamento:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
     loadStoragedData();
   }, []);
+
+  async function loadStoragedData() {
+    try {
+      const storagedToken = await AsyncStorage.getItem('token');
+      const storagedUser = await AsyncStorage.getItem('user');
+
+      if (storagedToken && storagedUser) {
+        const decodedToken = jwtDecode(storagedToken);
+        const currentDate = new Date();
+
+        // Verifica a expiração corretamente
+        const expirationDate = new Date(Number(decodedToken?.exp) * 1000);
+        if (expirationDate < currentDate) {
+          // Token expirou
+          setUser(null);
+          await AsyncStorage.clear()
+        } else {
+          // Token ainda é válido
+          setUser(JSON.parse(storagedUser));
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao carregar os dados do armazenamento:', error);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   async function singInFc(dataValue: FieldValues) {
     try {
