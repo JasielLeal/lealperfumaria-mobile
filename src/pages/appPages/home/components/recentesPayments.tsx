@@ -55,30 +55,31 @@ export function RecentesPayments() {
     return (
         <>
             <View>
-                <Text className="dark:text-white font-medium">
+                <Text className="dark:text-white font-medium mb-5">
                     Recentes
                 </Text>
-                
+
                 {data?.map((recent: Sale) => (
                     <View key={recent.id}>
-                        <TouchableOpacity onPress={() => handlePress(recent)}  onLongPress={() => toggleModal(recent.id)}>
-                            <View className="flex flex-row justify-between mt-5 bg-[#e0e0e0] dark:bg-background  p-3 rounded-xl" >
-                                <View className="flex flex-row">
-                                    <Text className="bg-white p-2 rounded-lg w-[45px]">
-                                        <Icon name='cart' size={20} color={'#AFAFAF'} />
+                        <TouchableOpacity onPress={() => handlePress(recent)} onLongPress={() => toggleModal(recent.id)}>
+                            <View className="flex flex-row mb-7 w-full justify-between items-center">
+                                <View className="flex flex-row items-center">
+                                    <Text className="border border-primary p-2 rounded-full">
+                                        <Icon name='cart' size={20} color={'#B66182'} />
                                     </Text>
                                     <View className="ml-3">
-                                        <Text className="dark:text-white font-medium">
+                                        <Text className="dark:text-white text-xs font-medium">
                                             {recent.customerName}
                                         </Text>
                                         <Text className="dark:text-text text-xs">
                                             {recent.transictionType}
                                         </Text>
+                                        <Text className="dark:text-white text-[10px] tex-text">
+                                            {formatCurrency(String(recent.value))}
+                                        </Text>
                                     </View>
                                 </View>
-                                <View>
-                                    <Text className="dark:text-white text-xs">+R$ {formatCurrency(recent.value)}</Text>
-                                </View>
+                                <Icon name='chevron-forward' size={20} color={'#B66182'} />
                             </View>
                         </TouchableOpacity>
                         <ModalOtion onClose={toggleModal} visible={modalVisibleOn} saleId={selectedSaleId} />

@@ -260,7 +260,7 @@ export function StartSale() {
                                         </Text>
                                     </View>
                                     <Button
-                                        iconColor="#fff"
+                                        iconColor="#FF0000"
                                         iconName="trash"
                                         iconSize={15}
                                         onPress={() => handleRemoveProduct(item.id, item.code)} // Chama a função de remoção ao clicar

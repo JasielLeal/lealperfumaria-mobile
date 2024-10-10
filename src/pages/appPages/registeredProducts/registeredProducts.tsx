@@ -56,7 +56,7 @@ export function RegisteredProducts() {
             <View className="flex flex-row justify-between mt-5 bg-[#e0e0e0] dark:bg-background p-3 rounded-xl">
                 <View className="flex flex-row">
                     <Text className="bg-white p-2 rounded-lg w-[45px]">
-                        <Icon name="cart" size={20} color="#AFAFAF" />
+                        <Icon name="bag" size={20} color="#AFAFAF" />
                     </Text>
                     <View className="ml-3">
                         <Text className="dark:text-white font-medium w-[190px] text-xs" numberOfLines={1} ellipsizeMode="tail">{item.name}</Text>
