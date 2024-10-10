@@ -105,7 +105,7 @@ export function StartSale() {
                 setProductsBack(updatedProductBack);
             } else {
                 // Produto novo, adiciona à lista
-                const product = { id: response.data.id, qnt: newInputValue, name: response.data.name, value: response.data.value, code: response.data.code };
+                const product = { id: response.data.id, qnt: newInputValue, name: response.data.name, value: response.data.value, code: response.data.code  };
                 const productNew = { code: response.data.code, amount: newInputValue };
 
                 setProducts([...products, product]);
@@ -158,7 +158,7 @@ export function StartSale() {
 
     const handleRemoveProduct = (productId: string, productCode: string) => {
 
-        console.log(productCode)
+        
         // Remove o produto da lista visual
         const updatedProducts = products.filter((product) => product.id !== productId);
         setProducts(updatedProducts);
@@ -199,8 +199,6 @@ export function StartSale() {
         if (!selectedValue) {
             setSelectedValue('Pix');
         }
-
-        console.log(productsBack)
 
         await CreateSaleFn({ customerName, products: productsBack, selectedValue });
     };

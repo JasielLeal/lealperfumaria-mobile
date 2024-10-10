@@ -76,7 +76,7 @@ export function Extract() {
                                     Saldo consolidado
                                 </Text>
                                 <Text className="dark:text-white">
-                                    R$ {formatCurrency(String(MonthlyAmount))}
+                                    R$ 
                                 </Text>
                             </View>
                         </View>

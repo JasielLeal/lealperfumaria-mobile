@@ -15,7 +15,7 @@ export async function monthlyExtract({
   take,
 }: monthlyExtractRequest) {
   const token = await AsyncStorage.getItem("token");
-
+  
   const response = await backend.get(`sale/monthlyextract/${month}`, {
     headers: {
       Authorization: `Bearer ${token}`,

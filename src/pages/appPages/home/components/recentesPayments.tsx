@@ -52,8 +52,6 @@ export function RecentesPayments() {
         navigation.navigate('SaleDetails', { sale: recent });
     }
 
-    
-
     return (
         <>
             <View>
@@ -62,8 +60,8 @@ export function RecentesPayments() {
                 </Text>
                 
                 {data?.map((recent: Sale) => (
-                    <>
-                        <TouchableOpacity onPress={() => handlePress(recent)} key={recent.id} onLongPress={() => toggleModal(recent.id)}>
+                    <View key={recent.id}>
+                        <TouchableOpacity onPress={() => handlePress(recent)}  onLongPress={() => toggleModal(recent.id)}>
                             <View className="flex flex-row justify-between mt-5 bg-[#e0e0e0] dark:bg-background  p-3 rounded-xl" >
                                 <View className="flex flex-row">
                                     <Text className="bg-white p-2 rounded-lg w-[45px]">
@@ -84,7 +82,7 @@ export function RecentesPayments() {
                             </View>
                         </TouchableOpacity>
                         <ModalOtion onClose={toggleModal} visible={modalVisibleOn} saleId={selectedSaleId} />
-                    </>
+                    </View>
                 ))}
 
             </View>
