@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, View, FlatList } from "react-native";
+import { Text, View, FlatList, ActivityIndicator } from "react-native";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { monthlyExtract, monthlyExtractRequest } from "../service/monthlyExtract";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
@@ -127,7 +127,7 @@ export function TransactionList({ month, search }: any) {
                     onEndReachedThreshold={1}
                     ListFooterComponent={() => {
                         if (isFetchingNextPage) {
-                            return <Text>Carregando mais...</Text>;
+                            return <ActivityIndicator size="small" color={"#B66182"} />
                         } else {
                             return null;
                         }

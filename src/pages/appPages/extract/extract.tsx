@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ViewStyle, TextStyle } from "react-native";
+import { View, Text, StyleSheet, ViewStyle, TextStyle, ActivityIndicator } from "react-native";
 import { Input } from "../../../components/input/input";
 import { useEffect, useState } from "react";
 import { Picker } from "@react-native-picker/picker";
@@ -8,7 +8,6 @@ import { MonthlyValue, MonthlyValueRequest } from "./service/MonthlyValue";
 import { formatCurrency } from "../../../utils/FormatMoney";
 
 export function Extract() {
-
     interface Month {
         id: number;
         month: string;
@@ -30,6 +29,9 @@ export function Extract() {
         { id: 12, month: "Dezembro", value: "12" },
     ];
 
+    const currentMonth = new Date().getMonth() + 1;
+    const filteredMonths = monthsAll.filter(month => month.id <= currentMonth);
+
     const styles = StyleSheet.create({
         pickerContainer: {
             height: 40,
@@ -49,10 +51,9 @@ export function Extract() {
     const [search, setSearch] = useState('');
 
     useEffect(() => {
-        const currentMonth = new Date().getMonth() + 1;
         const formattedMonth = currentMonth.toString().padStart(2, '0');
         setMonthSelected(formattedMonth);
-    }, []);
+    }, [currentMonth]);
 
     const { data: MonthlyAmount, isPending } = useQuery({
         queryKey: ['MonthlyValue', monthSelected],
@@ -60,44 +61,48 @@ export function Extract() {
     });
 
     return (
-        <>
-            <View className='dark:bg-[#121214] w-full h-screen'>
-                <View className='px-5 pt-5'>
-                    <View className='flex flex-row justify-center'>
-                        <Text className='dark:text-white font-medium'>Extrato Mensal</Text>
-                    </View>
-                    <View className="my-5">
-                        <Input placehoulder="Pesquisar..." onChangeText={setSearch} />
-                    </View>
-                    <View className="flex flex-row justify-between">
-                        <View className="flex flex-row justify-between items-start mb-5">
-                            <View>
-                                <Text className="dark:text-text">
-                                    Saldo consolidado
-                                </Text>
-                                <Text className="dark:text-white">
-                                    R$ {formatCurrency(String(MonthlyAmount))}
-                                </Text>
-                            </View>
-                        </View>
-                        <View style={styles.pickerContainer}>
-                            <Picker
-                                selectedValue={monthSelected}
-                                onValueChange={setMonthSelected}
-                                style={styles.text}
-                            >
-                                {monthsAll.map((month) => (
-                                    <Picker.Item label={month.month} value={month.value} key={month.id} />
-                                ))}
-                            </Picker>
-                        </View>
-                    </View>
-
-                    <TransactionList month={monthSelected} search={search} />
-
+        <View className='dark:bg-[#121214] w-full h-screen'>
+            <View className='px-5 pt-5'>
+                <View className='flex flex-row justify-center'>
+                    <Text className='dark:text-white font-medium'>Extrato Mensal</Text>
                 </View>
-            </View>
-        </>
-    )
-}
+                <View className="my-5">
+                    <Input placehoulder="Pesquisar..." onChangeText={setSearch} />
+                </View>
+                <View className="flex flex-row justify-between items-center">
+                    <View className="flex flex-row justify-between items-start mb-5">
+                        <View >
+                            <Text className="dark:text-text mb-1 font-medium">
+                                Saldo consolidado
+                            </Text>
+                            {
+                                isPending ? (
+                                    <View className="bg-background rounded-xl py-1">
+                                        <ActivityIndicator size="small" color={"#B66182"} />
+                                    </View>
+                                ) : (
+                                    <Text className="dark:text-white">
+                                        R$ {formatCurrency(String(MonthlyAmount))}
+                                    </Text>
+                                )
+                            }
+                        </View>
+                    </View>
+                    <View style={styles.pickerContainer}>
+                        <Picker
+                            selectedValue={monthSelected}
+                            onValueChange={setMonthSelected}
+                            style={styles.text}
+                        >
+                            {filteredMonths.map((month) => (
+                                <Picker.Item label={month.month} value={month.value} key={month.id} />
+                            ))}
+                        </Picker>
+                    </View>
+                </View>
 
+                <TransactionList month={monthSelected} search={search} />
+            </View>
+        </View>
+    );
+}

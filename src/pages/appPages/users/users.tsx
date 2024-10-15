@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { View, Text, Image, ActivityIndicator } from "react-native";
 import { ListingOfAllUsers } from "./services/listingOfAllUsers";
+import { Button } from "../../../components/button/Button";
+
 
 export function Users() {
 
@@ -19,6 +21,8 @@ export function Users() {
         avatar: string
     }
 
+
+
     return (
         <>
             <View className='dark:bg-[#121214] w-full h-screen'>
@@ -26,7 +30,6 @@ export function Users() {
                     <View className='flex flex-row justify-center mb-5'>
                         <Text className='dark:text-white font-medium'>Usuários Cadastrados</Text>
                     </View>
-
                     <View className="mt-5">
                         {data ?
                             data?.map((user: UserProps) => (
@@ -44,9 +47,6 @@ export function Users() {
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} className="mt-10">
                                 <ActivityIndicator size="large" />
                             </View>
-
-
-
                         }
                     </View>
                 </View>
