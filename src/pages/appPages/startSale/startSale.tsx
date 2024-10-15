@@ -130,7 +130,7 @@ export function StartSale() {
         await AddProductsToShoppinListFn(code);
     };
 
-    const calcularTotalGeral = () => {
+    const calcularTotalGeral = () => { 
         const total = products.reduce((acc, product) => {
             if (!product.qnt || !product.value) return acc;
             return acc + (Number(product.qnt) * Number(product.value) / 100);
@@ -147,6 +147,8 @@ export function StartSale() {
             setProducts([]);
             setProductsBack([]);
             setCustomerName('');
+
+            //redirecionar para a venda que acabou de ser feita.
         },
         onError: (error) => {
             Alert.alert("Error", `${error}`);

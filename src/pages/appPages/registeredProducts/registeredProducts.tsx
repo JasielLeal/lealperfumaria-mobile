@@ -7,6 +7,7 @@ import { Input } from "../../../components/input/input";
 import { formatCurrency } from "../../../utils/FormatMoney";
 import Icon from "react-native-vector-icons/Ionicons";
 import { ModalDeEditProduct } from "./components/productEditModal";
+import { ConfirmationModal } from "../../../components/confimationModal/ConfirmationModal";
 
 export function RegisteredProducts() {
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -51,6 +52,8 @@ export function RegisteredProducts() {
         refetch();
     }, [search, refetch]);
 
+    const [edit, setEdit] = useState(false)
+
     const renderProduct = ({ item }: { item: ProductProps }) => (
         <TouchableOpacity onPress={() => setEditProductId(item.id)}>
             <View className="flex flex-row justify-between mt-5 bg-[#e0e0e0] dark:bg-background p-3 rounded-xl">
@@ -86,7 +89,7 @@ export function RegisteredProducts() {
                         placehoulder="Pesquisar..."
                         onChangeText={handleSearchChange}
                         value={search}
-                        
+
                     />
                 </View>
                 {isPending ? (
@@ -109,7 +112,7 @@ export function RegisteredProducts() {
                     />
                 )}
             </View>
-
+            
             {/* Modal para edição do produto */}
             {editProductId !== null && (
                 <ModalDeEditProduct
@@ -118,6 +121,8 @@ export function RegisteredProducts() {
                     setIsModalVisible={() => setEditProductId(null)} // Fecha o modal ao definir o ID do produto como null
                 />
             )}
+
+            
         </View>
     );
 }
